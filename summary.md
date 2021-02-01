@@ -613,14 +613,22 @@ Self-balancing BSTs automatically re-balance themselves while maintaining the BS
 Self-Balancing BSTs can be used to implement sorted maps, sorted sets or priority queues.
 
 ```java
+// A set where items are sorted
 TreeSet<int> set = new TreeSet<>();
-set.add(2);
-set.add(1);
-set.add(3);
-set.firstKey(); // -> 1
+set.add(2); // O(logn)
+set.add(1); // O(logn)
+set.add(3); // O(logn)
+set.contains(2); // -> true, O(logn)
+set.firstKey(); // -> 1, O(logn)
 ```
 
 ```java
+// a priority queue is a queue where items are removed
+// by order of priority rather than using a FIFO order
+// The smaller the value, the higher the priority
+// A priority queue is implemented as min-heap
+// a type of balanced BST where the smallest item is always
+// stored at the root (there's also a max-heap which stores the largest item at the root)
 PriorityQueue<int> queue = new PriorityQueue<>();
 
 queue.add(2); // O(logn)

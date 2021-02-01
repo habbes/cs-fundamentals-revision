@@ -41,5 +41,11 @@ In the following segments we'll try to build some intuition in understanding and
 
 ### Understanding O(1)
 
-In terms of space complexity, this usually means the algorithm computes a fixed or constant amount of operations regardless of the input size. Executing a constant number of primitive operations is O(1). Executing a loop with a fixed number of iterations is O(1).
+In terms of time complexity, this usually means the algorithm executes a fixed or constant amount of operations regardless of the input size. Executing a constant number of primitive operations is O(1). Executing a loop with a fixed number of iterations is also O(1).
+
+In terms of space complexity, this means the algorithm a constant amount of extra space regardless of the input size. Most primitive data types like ints, bytes, chars have a fixed size (fixed number of bits) regardless of their value they hold (e.g. a 32-bit integer takes up the same amount of space whether it stores the value 0 or 1000000). Create fixed number of variables of such data types has O(1) space complexity. Data structures like strings or arrays which contain multiple elements occupy space depending on the number of items they hold. If your algorithm allocates an array or string whose size is fixed regardless of the input size, then this is also O(1). When you call a function, space is automatically allocated for it on the process's call stack (the stack frame contains local variables and other data). When the function returns, that stack frame is automatically de-allocated from the call stack. So if you're calling a function inside of a loop with n iterations, that will still cause O(1) space because in each iteration the function will be pushed, then popped from the stack. So the stack doesn't keep growing. But if it's a recursive function that calls itself before it returns, then the stack will keep grown and this would not be O(1).
+
+### Understanding O(log n)
+
+A logarithmic functions grows very slowly in time when the input size grows.
 

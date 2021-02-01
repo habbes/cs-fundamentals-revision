@@ -360,7 +360,7 @@ we just add more buckets
 
 After we add buckets, we have to move items depending
 on where their hashcodes land them in the new map
-"Four".hashCode() -> 7, 7 % 8 -> 7 ("Four" moves to bucket 3)
+"Four".hashCode() -> 7, 7 % 8 -> 7 ("Four" moves to bucket 7)
 
 [
     0 -> [Entry("Two", 2), Entry("Three", 3)]

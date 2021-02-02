@@ -2,7 +2,16 @@
 
 ## Common order of growths in Big-O analysis:
 
-O(1) < O(logn) < O(n) < O(nlogn) < O(n^2) < O(n^3) < O(2^n) < O(n!)
+From best to worst:
+
+- O(1) -> Constant
+- O(logn) -> Logarithmic
+- O(n) -> Linear
+- O(nlogn) -> Loglinear
+- O(n^2) -> Quadratic
+- O(n^3) -> Cubic
+- O(2^n) -> Exponential
+- O(n!) -> Factorial
 
 ## Primitive data types
 
@@ -610,7 +619,7 @@ Self-balancing BSTs automatically re-balance themselves while maintaining the BS
 
 - Time complexity is **O(logn)** for insertion, removal and updates
 
-Self-Balancing BSTs can be used to implement sorted maps, sorted sets or priority queues.
+Self-Balancing BSTs can be used to implement sorted maps, sorted sets
 
 ```java
 // A set where items are sorted
@@ -622,12 +631,18 @@ set.contains(2); // -> true, O(logn)
 set.firstKey(); // -> 1, O(logn)
 ```
 
+### Min-heap
+
+A balanced tree (not BST) where the each node is smaller than its children.
+Therefore the smallest value is at the root. When you remove
+the root, it restructures the tree such that the smallest item in the remaining nodes becomes the new root. This restructuring (heapify) is O(logn)
+
 ```java
 // a priority queue is a queue where items are removed
 // by order of priority rather than using a FIFO order
 // The smaller the value, the higher the priority
 // A priority queue is implemented as min-heap
-// a type of balanced BST where the smallest item is always
+// a type of balanced binary tree where the smallest item is always
 // stored at the root (there's also a max-heap which stores the largest item at the root)
 PriorityQueue<int> queue = new PriorityQueue<>();
 
@@ -639,3 +654,221 @@ queue.pop(); // removes 1, O(logn), removing an item requires
 // rebalancing the tree which is O(logn)
 
 ```
+
+## Graphs
+
+- A graph is a collection nodes and links between those nodes.
+- The nodes that are directly linked to a given node, are called its neighbours.
+- The links can represent any type of relationship (e.g. friends, synonyms, interest, manager)
+- The links can be bidirectional (meaning if A is connected B, therefore B is connected A, e.g. a friend relationship) or can be unidirectional (A -> B does not mean B -> A. E.g. manager relationship)
+- When the links have a direction, the graph is called a directed graph
+- Links can also have weights, i.e. number which could represent the strength of the relationship, the distance between 2 cities, etc.
+- Graphs can have cycles, A - B, B - C, C - A
+- Graphs without cycles is called an acyclic graph
+- A tree is a directed acyclic graph where one node serves as the root
+
+- A graph can be represented with an **adjacency matrix**, a 2d array where M[i][j] == 1 if there's a connection between nodes i and j, otherwise M[i][j] = 0
+- A more common way to represent a graph is using **adjacency lists**. Normally this hashmap where each node is a key in the map, and for key, the value is a list of all the nodes directly connected to it.
+- You can traverse a graph using DFS or BFS
+
+```java
+// job:work job:occupation occupation:career ablaze:burning
+HashMap<String, List<String>> graph = new HashMap<>();
+graph.put("job", new ArrayList<>(String[] { "occupation", "work" }));
+graph.put("work", new ArrayList<>(String[] { "job" }));
+graph.put("occupation", new ArrayList<>(String[] { "job", "career" }));
+graph.put("career", new ArrayList<>(String[] { "occupation" }));
+graph.put("ablaze", new ArrayList<>(String[] { "burning" }));
+graph.put("burning", new ArrayList<>(String[] { "ablaze" }));
+
+void traverse(Map<String, List<String>> graph, String startNode) {
+    // pick a starting node
+    Queue<String> toVisit = new LinkedList<>();
+    Set<String> visited = new HashSet<>();
+    toVisit.push(startNode);
+    
+    while (!toVisit.isEmpty() {
+        String current = toVisit.remove();
+        if (visited.contains(current)) {
+            continue;
+        }
+        System.out.println(current);
+        List<String> neighbors = graph.get(current);
+        visited.add(current);
+        for (String neighbor : neighbors) {
+            toVisit.add(neighbor);
+        }
+    }
+    
+}
+
+boolean contains(Map<String, List<String>> graph, String startNode, String searchKey) {
+    // pick a starting node
+    Queue<String> toVisit = new LinkedList<>();
+    Set<String> visited = new HashSet<>();
+    toVisit.push(startNode);
+    
+    while (!toVisit.isEmpty() {
+        String current = toVisit.remove();
+        if (visited.contains(current)) {
+            continue;
+        }
+        if (current == searchKey) {
+            return true;
+        }
+        List<String> neighbors = graph.get(current);
+        visited.add(current);
+        for (String neighbor : neighbors) {
+            toVisit.add(neighbor);
+        }
+    }
+
+    return false;
+}
+
+```
+
+### Dynamic programming
+
+Fibonacci sequence: 1 1 2 3 5 8 13 21
+fib(0) = 1
+fib(1) = 1
+fib(x) = fib(x - 1) + fib(x - 2)
+
+```java
+
+int fibonacci(int index) {
+    if (index <= 1) {
+        return 1;
+    }
+
+    return fibonacci(index - 1) + fibonacci(index - 2);
+}
+
+```
+
+The naive recursive implementation is O(2^n)
+```
+
+                               fib(5)
+        fib(4)                               fib(3)
+    fib(3)    +     fib(2)                  fib(2) +   fib(1)
+ fib(2) +  fib(1)  fib(1) + fib(0)        fib(1) + fib(0)
+fib(1) + fib(0)
+```
+
+
+It calls computes the same value multiple times, e.g.
+fib(3) is called 2 times
+fib(2) is called 3 times
+
+But the value of fib(3) never changes
+We can save the values we've already computed, so that the next
+we need it, we get it from the cache instead of computing again
+
+This is called **memoization**
+
+```java
+
+int fibonacci(int index, Map<int, int> cache) {
+    if (index <= 1) {
+        return 1;
+    }
+
+    if (!cache.containsKey(index)) {
+        int value = fibonacci(index - 1) + fibonacci(index - 2);
+        cache.put(index, value);
+    }
+
+    return cache.get(index);
+}
+
+```
+
+With memoization, this is O(n)
+```
+
+                               fib(5)
+        fib(4)                               fib(3)from cache
+    fib(3)*    +     fib(2)from cache       
+ fib(2)* +  fib(1)            
+fib(1) + fib(0)
+```
+
+But you can use a bottom-up loop instead of recursion:
+
+```java
+
+int fibonacciIterative(int index) {
+    if (index <= 1) {
+        return 1;
+    }
+
+    int x = 1; // previous-1 value
+    int y = 1; // previous value
+    newValue = 3;
+
+
+    for (int i = 2; i <= index; i++) {
+        int newValue = x + y;
+        x = y;
+        y = newValue;
+    }
+
+    return y;
+}
+```
+
+# System Design
+
+- Database: Stores data persistently in a way that can be queried. e.g. MySQL
+- API Server: Server that receives and handles API requests from clients
+
+- **Horizontal Scaling**: Increasing the capacity of your system by increasing number of nodes that perform a given task in order to handle more tasks/requests
+- **Vertical Scaling**: Increasing the capacity of your system by adding resources to a single node, making it more powerful (e.e. increasing RAM, CPU cores, etc.)
+
+- **Load Balancer**: (Reverse proxy) Receives requests from clients and distributed those requests across multiple servers. This allows traffic to be distributed across many servers instead of a single server bearing all the load. This allows your application to handle more concurrent users (e.g. multiple requests sent at the same time) as well improves reliability (e.g. if one server goes down, then other servers will continue to serve requests).
+When you're scaling your API server horizontal, you should also use a load balancer.
+
+- **Database replication**: Having multiple instances of database server in a cluster. The data in the database is replicated/copied on all the servers. Usually one of the servers acts the primary or master and the others are secondaries or slaves. Only the primary node accepts writes (i.e. insertions, deletions or updates). But other nodes can also serve reads.
+Whenever the primary receives writes, the updates are sent to the secondaries to update their own copies. There's a delay in time within which the servers have different data i.e. inconsistency.
+
+Replication allows multiple instances to serve reads from the database system, so this is a form of scaling. But replication also allows a secondary
+to take over as primary if the original primary goes down. This improves reliability of your system (makes it more fault-tolerant).
+
+If there's a network issue and the instances can't communicate, then you have to make a choice:
+- Either you stop responding to all requests until the network issue is resolved. But in this case your system is **no longer available**
+- Or you continue responding requests but since your nodes are not communicating, they can end up having different copies of data. This means your system is **inconsistent**
+
+This notion is known as the **CAP** theorem: In a distributed, in the presence of a network **P**artition, you can either have **A**vailability or **C**onsistency, but not both.
+
+- **Database sharding**: splitting the data and storing it on different databases. It useful when your data is too large to fit in a single database or when you want to distribute your geographically such that data is closer to the people who need them. This usually introduces more complexity, makes queries difficult, and some queries impossible. It's not recommended to do this unless you've exhausted what you can store in a single database.
+
+- **Database indexing**: Index a field in table to make queries that use that field faster. If a query uses an indexed field the database will search index instead of doing a linear search in the table.
+An index is a separate data structure on disk and is implemented using a **B-Tree** (type of balanced search tree). Searching through an index is O(logn), doing a table scan is O(n)
+
+  - Trade offs: Indexes take up extra storage space. Also an index is updated each time a new value is inserted into the table, delete, or updated. An index makes queries much faster, but slightly slows down writes. So it's recommended to use indexes on fields that are queried frequently, but updated rarely.
+
+- **Distributed Cache (Redis)**: A server that stores key-value data in memory and allows you to add, or access data by key. Thing of it as a server that works like a hashmap. It's usually faster than accessing data in a database (memory is much faster than disk), but has limited queries capabilities (i.e. you can only access data by key). Might be expense to have large caches cause RAM is more expensive than HDD. So caches are usually smaller than the original data source. So you need a way to evict data when the cache gets full (e.g. LRU eviction).
+
+Because data is stored in memory, data will be lost when if the server crashes or power is lost.
+
+If you're caching data that's in a database, you might have to deal with consistency issues, i.e. when data is updated in the database, it should also be updated in cache.
+
+- **Message Queue/Message Broker (e.g. RabbitMQ)**: Provides message queues through which different nodes communicate with each other without talking to each other directly. Direct communication between a sender and a receiver is not always possible ideal because it requires the sender to know the IP of all receivers, to keep track of new receivers that want may want to receiver the message, to keep track of connections that break, etc. A message broker in an intermediary that decouples the sender (producer) and receiver (consumer). Sender sends message to queue, and all receivers on that queue receive the message.
+
+Use cases: 
+ - when one node wants to broadcast a notification to other nodes
+ - when you have multiple workers and you want to distribute tasks equally across the worker, you could use worker queues where the message broker sends a task to one worker, then the next task to the other worker, etc.
+
+ Other benefits:
+ - message brokers can allow you to manage topics so that messages are only delivered to nodes which have subscribed to that topic (publish/subscribe or pub/sub)
+ - message brokers can keep track of acknowledgements to know whether a task was complete or not before removing it from the queue, if the task failed or the worker handling it crashed, it an requeue the message and send it to a different worker
+ - message brokers can ensure that a receiver is not receiving more messages than it can handler
+
+
+ - **Background worker**: A node in your system which handles long-running tasks. You create background workers to avoid running long-running tasks in the same API server that's responding to user requests. User requests should be responded to quickly. So if the requests has requires a long-running job (e.g. processing an image, sending bulk emails), then the server creates a task and sends it to the worker queue. The message brokers sends it to a background worker and then background worker process the task. When it's complete it can broadcast a notification back to the server and the server can send a notification to the user using WebSockets, or send an email to the user, 
+
+ - **Websockets**: WebSockets create persistent connections between server and client and allows bi-directional communication between the server and client. This means once the WebSocket connection is established, the server can send a message directly to the client even when the client has not sent a request. In normal HTTP, the client creates a connection to the server then sends a request, the server sends a response over the same connection, then the connection is closed. The server cannot send anything to the client without the client initiating a request.
+
+ WebSockets are used in realtime applications (e.g. chat applications, realtime notifications, etc.)

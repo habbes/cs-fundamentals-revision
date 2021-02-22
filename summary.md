@@ -418,8 +418,7 @@ for(String item : set) {
 - Quick sort: Picks a pivot element, moves items smaller than the pivot to the left, and items greater than the pivot to the right, then recursively calls quick sort to the left and right sub lists.
   - Time complexity: **O(nlogn)**
   - Space complexity: **O(logn)**
-  - Can be also be applied to linked lists since it doesn't need to swap elements at random indexes
-  - It **unstable** meaning 2 items with the same ordering value might not end up in their original in the original list
+  - It **unstable** meaning 2 items with the same ordering value might not end up in their original order in the original list
 
 - Insertion Sort: For each element[i] in the array, swap the element[i] with element[i - 1] so long as element[i] < element[i - 1]
   - Time complexity: **O(n^2)**

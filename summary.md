@@ -729,15 +729,21 @@ boolean contains(Map<String, List<String>> graph, String startNode, String searc
 
 ### Dynamic programming
 
-Fibonacci sequence: 1 1 2 3 5 8 13 21
-fib(0) = 1
+Fibonacci sequence: 0 1 1 2 3 5 8 13 21
+
+```
+fib(0) = 0
 fib(1) = 1
 fib(x) = fib(x - 1) + fib(x - 2)
+```
 
 ```java
 
 int fibonacci(int index) {
-    if (index <= 1) {
+    if (index == 0) {
+        return 0;
+    }
+    if (index == 1) {
         return 1;
     }
 
